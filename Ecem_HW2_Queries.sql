@@ -1,139 +1,135 @@
 --------JOIN OPERATORS-----------
 
 --1
-select distinct c.lýcense_class from bookýngs b
-JOIN customers c on b.customer_ýd = c.customer_ýd
-JOIN cars ca on b.car_ýd = ca.car_ýd
+select distinct c.license_class from bookings b
+JOIN customers c on b.customer_id = c.customer_id
+JOIN cars ca on b.car_id = ca.car_id
 where c.gender = 'Female';
 
 --2
-select c.name, c.surname, ca.car_brand, ca.car_model from bookýngs b
-joýn customers c on b.customer_ýd = c.customer_ýd
-joýn cars ca on b.car_ýd = ca.car_ýd
-where ca.class = 'Luxury' and b.bookýng_date > '01/01/2020';
+select c.name, c.surname, ca.car_brand, ca.car_model from bookings b
+join customers c on b.customer_id = c.customer_id
+join cars ca on b.car_id = ca.car_id
+where ca.class = 'Luxury' and b.booking_date > '01/01/2020';
 
 --3
-select cu.name, cu.surname, cu.gender, cu.býrth_date, b.* from customers cu
-left joýn bookýngs b on cu.customer_ýd = b.customer_ýd
-where cu.býrth_date between '01/01/1960' and '01/01/1980';
+select cu.name, cu.surname, cu.gender, cu.birth_date, b.* from customers cu
+left join bookings b on cu.customer_id = b.customer_id
+where cu.birth_date between '01/01/1960' and '01/01/1980';
 
 --4
 select * from cars c
-left joýn bookýngs b on c.car_ýd = b.car_ýd
-where b.bookýng_ýd ýs null and c.daýly_prýce > '500,00' and c.avaýlabýlýty = '1';
+left join bookings b on c.car_id = b.car_id
+where b.booking_id is null and c.daily_price > '500,00' and c.availability = '1';
 
 --5
-select cu.customer_ýd, count(cu.customer_ýd) from customers cu
-ýnner joýn bookýngs b on cu.customer_ýd = b.customer_ýd
-group by cu.customer_ýd
-havýng count(cu.customer_ýd) > 1;
+select cu.customer_id, count(cu.customer_id) from customers cu
+inner join bookings b on cu.customer_id = b.customer_id
+group by cu.customer_id
+having count(cu.customer_id) > 1;
 
 -------SET OPERATORS---------
 
---1  Daha once kýralanmamýþ araçlarýn ýd býlgýsý
-select car_ýd from cars
-mýnus
-select car_ýd from bookýngs;
+--1  Daha Ã¶nce kiralanmamÄ±ÅŸ araÃ§larÄ±n id bilgisi
+select car_id from cars
+minus
+select car_id from bookings;
 
---2  Daha once rezervasyon yaptýrmýþ musterýlerýn ýd býlgýsý
-select customer_ýd from customers
-ýntersect
-select customer_ýd from bookýngs;
+--2  Daha Ã¶nce rezervasyon yaptÄ±rmÄ±ÅŸ mÃ¼ÅŸterilerin id bilgisi
+select customer_id from customers
+intersect
+select customer_id from bookings;
 
---------------------------------------------------------------------------------------------
----unýon için çok uygun sorgular bulamadým kendi tablolarýmdan (aþaðýdaki 2 sorgu için)-----
---------------------------------------------------------------------------------------------
+------UNION------
 
 --3
 select * from customers 
-where name lýke 'A%'
-unýon
+where name like 'A%'
+union
 select * from customers 
-where name lýke 'E%'
-unýon
+where name like 'E%'
+union
 select * from customers 
-where name lýke 'U%';
+where name like 'U%';
 
 --4
-select customer_ýd, name, surname, býrth_date from customers
-where býrth_date lýke '%1973%'
-unýon
-select customer_ýd, name, surname, býrth_date from customers
-where býrth_date lýke '%1967';
+select customer_id, name, surname, birth_date from customers
+where birth_date like '%1973%'
+union
+select customer_id, name, surname, birth_date from customers
+where birth_date like '%1967';
 
 -----SINGLE ROW NUMBER OPERATIONS-----
 
 --1
-select customer_ýd, 
+select customer_id, 
 name|| ' ' ||surname as CUS_NAME
 from customers
 order by substr(name,1,1) ASC;
 
 --2
-select daýly_prýce, rpad(round(daýly_prýce),4,'$') from cars;
+select daily_price, rpad(round(daily_price),4,'$') from cars;
 
 --3
-select b.customer_ýd, cu.name, cu.surname, b.fýnýshýng_date - b.startýng_date as "Arabanýn kýralanma suresý (gün)"
-from bookýngs b 
-ýnner joýn customers cu on b.customer_ýd = cu.customer_ýd
-order by "Arabanýn kýralanma suresý (gün)";
+select b.customer_id, cu.name, cu.surname, b.finishing_date - b.starting_date as "ArabanÄ±n kiralanma sÃ¼resi (gÃ¼n)"
+from bookings b 
+inner join customers cu on b.customer_id = cu.customer_id
+order by "ArabanÄ±n kiralanma sÃ¼resi (gÃ¼n)";
 
 --4
-select customer_ýd, name, surname, round(MONTHS_BETWEEN(sysdate, regýstratýon_date)) as  "Number of Months"
+select customer_id, name, surname, round(MONTHS_BETWEEN(sysdate, registration_date)) as  "Number of Months"
 from customers
-order by customer_ýd;
+order by customer_id;
 
 --5
-select customer_ýd, name, surname, cýty from customers
-where cýty lýke 'A%';
+select customer_id, name, surname, city from customers
+where city like 'A%';
 
 --6
 select * from cars
-where lýcense_plate lýke '%E%';
+where license_plate like '%E%';
 
 --7
-select car_ýd, car_brand, car_model, trunc(daýly_prýce,1) from cars
-order by daýly_prýce desc;
+select car_id, car_brand, car_model, trunc(daily_price,1) from cars
+order by daily_price desc;
 
 --8
-select b.fýnýshýng_date - b.startýng_date as "Araba kaç gün kiralandý?",
-	trunc(daýly_prýce) "Daily Price", 
-	(b.fýnýshýng_date - b.startýng_date) * trunc(daýly_prýce) as "Total"
-from bookýngs b
-ýnner joýn cars c on b.car_ýd = c.car_ýd ;
+select b.finishing_date - b.starting_date as "Araba kaÃ§ gÃ¼n kiralandÄ±?",
+	trunc(daily_price) "Daily Price", 
+	(b.finishing_date - b.starting_date) * trunc(daily_price) as "Total"
+from bookings b
+inner join cars c on b.car_id = c.car_id ;
 
 --9
-select distinct car_ýd, car_brand, car_model from cars where daýly_prýce>=(select avg(daýly_prýce) from cars);
+select distinct car_id, car_brand, car_model from cars where daily_price>=(select avg(daily_price) from cars);
 
 --10
-select lýcense_class, LISTAGG(name,',') WITHIN GROUP( ORDER BY name ) AS customer_name
+select license_class, LISTAGG(name,',') WITHIN GROUP( ORDER BY name ) AS customer_name
 from customers
-group by lýcense_class
-order by lýcense_class;
+group by license_class
+order by license_class;
 
 --11
-select * from customers where regýstratýon_date > to_date ('2015','YYYY') 
-order by regýstratýon_date;
+select * from customers where registration_date > to_date ('2015','YYYY') 
+order by registration_date;
 
 --12
-select class, LISTAGG(car_ýd,',') WITHIN GROUP( ORDER BY car_ýd ) AS "Car Class"
+select class, LISTAGG(car_id,',') WITHIN GROUP( ORDER BY car_id ) AS "Car Class"
 from cars
 group by class
 order by class;
 
 --13
 select * from customers 
-where postal_code lýke'%00';
+where postal_code like'%00';
 
 --14
-select customer_ýd, name, surname, upper(cýty) from customers
-order by upper(cýty);
+select customer_id, name, surname, upper(city) from customers
+order by upper(city);
 
 --15
 select * from customers
-where phone lýke '%534%';
+where phone like '%534%';
 
 --16
-select car_ýd, car_brand, seat_number, RANK() OVER (ORDER BY seat_number) seat_rank from cars;
-	
-    
+select car_id, car_brand, seat_number, RANK() OVER (ORDER BY seat_number) seat_rank from cars;
